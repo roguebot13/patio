@@ -38,7 +38,9 @@ export default function UserPage() {
   return (
     <>
       <Head>
-        <title>User Home - Patio</title>
+        <title>
+          {profile.name} (@{profile.handle}) - Patio
+        </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

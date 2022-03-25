@@ -5,7 +5,7 @@ import ConnectWallet from './ConnectWallet'
 export default function PageSelector({ active = 'home' }) {
   const router = useRouter()
   return (
-    <div className="flex flex-col flex-shrink-0 w-64 py-4 pr-3">
+    <div className="flex flex-col flex-shrink-0 w-64 py-8 pr-3">
       <ConnectWallet />
       <ul className="menu bg-base-100 mt-8">
         <li className={router.pathname === '/home' ? 'bordered' : ''}>

@@ -1,10 +1,17 @@
 import dayjs from 'dayjs'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import Post from './Post'
 
 export default function Comment({ item }) {
+  const router = useRouter()
   return (
-    <div className="flex w-full p-8 border-b border-gray-300">
+    <div
+      className="flex w-full p-8 border-b border-gray-300 hover:bg-base-200 cursor-pointer"
+      onClick={() => {
+        router.push('/' + item.profile.handle + '/posts/' + item.id)
+      }}
+    >
       <div className="flex-shrink-0 avatar">
         <div className="w-12 h-12 rounded-full bg-gray-400">
           <img src={item.profile.picture?.original.url} />
@@ -21,7 +28,7 @@ export default function Comment({ item }) {
             <span className="ml-1 cursor-pointer">@{item.profile.handle}</span>
           </Link>
 
-          <span className="ml-auto text-sm">
+          <span className="ml-auto text-sm text-base-300">
             {dayjs(item.createdAt).fromNow()}
           </span>
         </div>

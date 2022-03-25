@@ -13,7 +13,7 @@ export default function HomePage() {
         <h1 className="text-xl">Home</h1>
       </div>
       <div className="flex-grow h-0 overflow-auto">
-        <div className="flex w-full p-8 border-b-4 border-gray-300">
+        <div className="flex w-full p-8 border-b border-gray-300">
           <span className="flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full"></span>
           <div className="flex flex-col flex-grow ml-4">
             <textarea

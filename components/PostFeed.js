@@ -1,22 +1,22 @@
 import { useQuery } from '@apollo/client'
 import { useEffect } from 'react'
-import { TIMELINE_QUERY } from '../gql/timeline'
-import FeedItem from './FeedItem'
+import { GET_COMMENTS_BY_PUBLICATION } from '../gql/publication'
+import Post from './Post'
 
-export default function TimelineFeed({ profileId }) {
-  if (!profileId || profileId === '') return null
+export default function PostFeed({ publicationId }) {
+  if (!publicationId || publicationId === '') return null
 
   const { data, loading, error, fetchMore, refetch } = useQuery(
-    TIMELINE_QUERY,
+    GET_COMMENTS_BY_PUBLICATION,
     {
       variables: {
-        profileId: profileId,
+        publicationId: publicationId,
         cursor: '{}',
       },
     },
   )
 
-  useEffect(refetch, [profileId])
+  useEffect(refetch, [publicationId])
 
   if (loading) {
     return (
@@ -31,12 +31,12 @@ export default function TimelineFeed({ profileId }) {
     return null
   }
 
-  const items = data.timeline.items
+  const items = data.publications.items
 
   return (
     <>
       {items.map((item) => (
-        <FeedItem item={item} />
+        <Post item={item} />
       ))}
       <div className="text-center p-4">
         <button
@@ -44,8 +44,8 @@ export default function TimelineFeed({ profileId }) {
           onClick={() => {
             fetchMore({
               variables: {
-                profileId: profileId,
-                cursor: data.timeline.pageInfo.next,
+                publicationId: publicationId,
+                cursor: data.publications.pageInfo.next,
               },
             })
           }}

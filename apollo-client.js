@@ -2,15 +2,16 @@ import { ApolloClient, InMemoryCache } from '@apollo/client'
 
 const client = new ApolloClient({
   uri: 'https://api-mumbai.lens.dev',
-  request: (operation) => {
+  request: (operation, forward) => {
     const accessToken = localStorage.getItem('accessToken')
     if (accessToken) {
       operation.setContext({
         headers: {
-          'x-access-token': accessToken,
+          'x-access-token': `Bearer ${accessToken}`,
         },
       })
     }
+    return forward(operation)
   },
   cache: new InMemoryCache({
     typePolicies: {
@@ -31,6 +32,20 @@ const client = new ApolloClient({
             },
           },
           timeline: {
+            // Don't cache separate results based on
+            // any of this field's arguments.
+            keyArgs: ['profileId'],
+
+            // Concatenate the incoming list items with
+            // the existing list items.
+            merge(existing = { items: [] }, incoming) {
+              return {
+                ...incoming,
+                items: [...existing.items, ...incoming.items],
+              }
+            },
+          },
+          publications: {
             // Don't cache separate results based on
             // any of this field's arguments.
             keyArgs: ['profileId'],

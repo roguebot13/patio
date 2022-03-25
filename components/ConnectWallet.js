@@ -132,9 +132,9 @@ export default function ConnectWallet() {
   useEffect(checkForExpiry, [])
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between pl-3">
       <div className="avatar flex-shrink-0">
-        <div className="w-14 h-14 rounded-full bg-gray-400"></div>
+        <div className="w-12 h-12 rounded-full bg-gray-400"></div>
       </div>
       {walletConnected ? (
         <button
