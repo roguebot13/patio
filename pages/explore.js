@@ -18,8 +18,8 @@ export default function ExplorePage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="flex flex-col flex-grow border-l border-r border-gray-300">
-        <div className="flex justify-between items-center flex-shrink-0 px-8 py-4 border-b border-gray-300">
+      <div className="flex flex-col flex-grow border-l border-r border-base-300">
+        <div className="flex justify-between items-center flex-shrink-0 px-8 py-4 border-b border-base-300">
           <h1 className="text-xl">Explore</h1>
           <input
             className="input input-sm input-bordered rounded-full"
@@ -28,7 +28,7 @@ export default function ExplorePage() {
           />
         </div>
         <div className="flex-grow h-0 overflow-auto">
-          <div className="flex w-full p-8 border-b-1 border-gray-300">
+          <div className="flex w-full p-8 border-b-1 border-base-300">
             <div className="tabs">
               <div
                 className={

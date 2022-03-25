@@ -7,13 +7,13 @@ export default function Comment({ item }) {
   const router = useRouter()
   return (
     <div
-      className="flex w-full p-8 border-b border-gray-300 hover:bg-base-200 cursor-pointer"
+      className="flex w-full p-8 border-b border-base-300 hover:bg-base-200 cursor-pointer"
       onClick={() => {
         router.push('/' + item.profile.handle + '/posts/' + item.id)
       }}
     >
       <div className="flex-shrink-0 avatar">
-        <div className="w-12 h-12 rounded-full bg-gray-400">
+        <div className="w-12 h-12 rounded-full bg-primary">
           <img src={item.profile.picture?.original.url} />
         </div>
       </div>
@@ -28,7 +28,7 @@ export default function Comment({ item }) {
             <span className="ml-1 cursor-pointer">@{item.profile.handle}</span>
           </Link>
 
-          <span className="ml-auto text-sm text-base-300">
+          <span className="ml-auto text-sm text-accent-content">
             {dayjs(item.createdAt).fromNow()}
           </span>
         </div>

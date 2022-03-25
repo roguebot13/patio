@@ -7,7 +7,7 @@ export default function Post({ item, quoted = false, mainPost = false }) {
   return (
     <div
       className={
-        'flex w-full p-8 border-gray-300 hover:bg-base-200 cursor-pointer' +
+        'flex w-full p-8 border-base-300 hover:bg-base-200 cursor-pointer' +
         (!quoted ? ' border-b' : '') +
         (mainPost ? ' border-b-0' : '')
       }
@@ -16,11 +16,11 @@ export default function Post({ item, quoted = false, mainPost = false }) {
       }}
     >
       <div className="flex-shrink-0 avatar">
-        <div className="w-12 h-12 rounded-full bg-gray-400">
+        <div className="w-12 h-12 rounded-full bg-primary">
           <img src={item.profile.picture?.original.url} />
         </div>
         {mainPost ? (
-          <span className="absolute h-full w-0.5 top-12 left-6 bg-gray-300"></span>
+          <span className="absolute h-full w-0.5 top-12 left-6 bg-base-300"></span>
         ) : (
           ''
         )}
@@ -37,7 +37,7 @@ export default function Post({ item, quoted = false, mainPost = false }) {
           </Link>
 
           {!quoted ? (
-            <span className="ml-auto text-sm text-base-300">
+            <span className="ml-auto text-sm text-accent-content">
               {dayjs(item.createdAt).fromNow()}
             </span>
           ) : (

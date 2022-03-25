@@ -9,7 +9,7 @@ module.exports = {
   plugins: [require('@tailwindcss/typography'), require('daisyui')],
   daisyui: {
     styled: true,
-    themes: ['bumblebee'],
+    themes: ['bumblebee', 'halloween'],
     base: true,
     utils: true,
     logs: true,

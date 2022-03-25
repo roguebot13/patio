@@ -49,14 +49,14 @@ export default function PostPage() {
         ) : (
           ''
         )}
-        <div className="flex flex-col border-b border-gray-300 p-8">
+        <div className="flex flex-col border-b border-base-300 p-8">
           <div className="flex">
             <div className="flex-shrink-0 avatar">
-              <div className="w-12 h-12 rounded-full bg-gray-400">
+              <div className="w-12 h-12 rounded-full bg-primary">
                 <img src={post.profile.picture?.original.url} />
               </div>
               {post.__typename === 'Comment' ? (
-                <span className="absolute h-6 w-0.5 -top-6 left-6 bg-gray-300"></span>
+                <span className="absolute h-6 w-0.5 -top-6 left-6 bg-base-300"></span>
               ) : (
                 ''
               )}
@@ -75,7 +75,7 @@ export default function PostPage() {
                 </Link>
               </div>
             </div>
-            <span className="ml-auto text-sm text-base-300">
+            <span className="ml-auto text-sm text-accent-content">
               {dayjs(post.createdAt).fromNow()}
             </span>
           </div>

@@ -13,12 +13,12 @@ function MyApp({ Component, pageProps }) {
     <ApolloProvider client={client}>
       <ClientOnly>
         <div
-          className="flex justify-center w-screen h-screen px-4"
-          data-theme="bumblebee"
+          className="flex justify-center w-screen h-screen px-4 bg-base-100 text-base-content"
+          data-theme="halloween"
         >
           <div className="flex w-full max-w-screen-lg">
             <PageSelector active="home" />
-            <div className="flex flex-col flex-grow border-l border-r border-gray-300">
+            <div className="flex flex-col flex-grow border-l border-r border-base-300">
               <Component {...pageProps} />
             </div>
           </div>

@@ -161,3 +161,17 @@ export const GET_PROFILE_BY_HANDLE = gql`
     }
   }
 `
+
+export const CREATE_PROFILE = gql`
+  mutation($request: CreateProfileRequest!) {
+    createProfile(request: $request) {
+      ... on RelayerResult {
+        txHash
+      }
+      ... on RelayError {
+        reason
+      }
+      __typename
+    }
+  }
+`

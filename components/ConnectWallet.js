@@ -2,11 +2,14 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import apolloClient from '../apollo-client'
 import { getAddress, signText } from '../ethers-service'
+import parseJwt from '../helpers/parseJwt'
+
 import {
   GET_CHALLENGE,
   AUTHENTICATION,
   REFRESH_AUTHENTICATION,
 } from '../gql/login'
+import SwitchProfile from './SwitchProfile'
 
 const generateChallenge = (address) => {
   return apolloClient.query({
@@ -42,14 +45,6 @@ const reauthenticate = (refreshToken) => {
   })
 }
 
-function parseJwt(token) {
-  try {
-    return JSON.parse(atob(token.split('.')[1]))
-  } catch (e) {
-    return {}
-  }
-}
-
 export default function ConnectWallet() {
   const [walletConnected, setWalletConnected] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -74,6 +69,7 @@ export default function ConnectWallet() {
     localStorage.removeItem('refreshToken')
     localStorage.removeItem('accessExpiry')
     localStorage.removeItem('refreshExpiry')
+    localStorage.removeItem('currentProfile')
     setWalletConnected(false)
   }
 
@@ -133,9 +129,7 @@ export default function ConnectWallet() {
 
   return (
     <div className="flex items-center justify-between pl-3">
-      <div className="avatar flex-shrink-0">
-        <div className="w-12 h-12 rounded-full bg-gray-400"></div>
-      </div>
+      <SwitchProfile />
       {walletConnected ? (
         <button
           className={

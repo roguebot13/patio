@@ -45,7 +45,7 @@ export default function UserPage() {
       </Head>
 
       <div className="flex-grow h-0 overflow-auto">
-        <div className="flex flex-col border-b border-gray-300">
+        <div className="flex flex-col border-b border-base-300">
           <img
             className="object-cover object-center w-full h-64"
             src={profile.coverPicture?.original.url}
@@ -53,7 +53,7 @@ export default function UserPage() {
           />
           <div className="flex px-6 items-center relative -top-12 h-20">
             <div className="avatar">
-              <div className="w-36 h-36 rounded-full bg-gray-400 ring ring-primary">
+              <div className="w-36 h-36 rounded-full bg-primary ring ring-primary">
                 <img src={profile.picture?.original.url} />
               </div>
             </div>
