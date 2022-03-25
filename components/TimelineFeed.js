@@ -1,27 +1,22 @@
 import { useQuery } from '@apollo/client'
-import dayjs from 'dayjs'
 import { useEffect } from 'react'
-import {
-  EXPLORE_PUBLICATIONS_QUERY,
-  ExlporePublicationsSortCriteria,
-} from '../gql/explorePublications'
-import Link from 'next/link'
+import { TIMELINE_QUERY } from '../gql/timeline'
 import FeedItem from './FeedItem'
 
-export default function ExploreFeed({
-  sortCriteria = ExlporePublicationsSortCriteria.TOP_COMMENTED,
-}) {
+export default function TimelineFeed({ profileId }) {
+  if (!profileId) return null
+
   const { data, loading, error, fetchMore, refetch } = useQuery(
-    EXPLORE_PUBLICATIONS_QUERY,
+    TIMELINE_QUERY,
     {
       variables: {
-        sortCriteria: sortCriteria,
+        profileId: profileId,
         cursor: '{}',
       },
     },
   )
 
-  useEffect(refetch, [sortCriteria])
+  useEffect(refetch, [profileId])
 
   if (loading) {
     return (
@@ -36,7 +31,7 @@ export default function ExploreFeed({
     return null
   }
 
-  const items = data.explorePublications.items
+  const items = data.timeline.items
 
   return (
     <>
@@ -49,8 +44,8 @@ export default function ExploreFeed({
           onClick={() => {
             fetchMore({
               variables: {
-                sortCriteria: sortCriteria,
-                cursor: data.explorePublications.pageInfo.next,
+                profileId: profileId,
+                cursor: data.timeline.pageInfo.next,
               },
             })
           }}
