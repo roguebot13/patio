@@ -175,3 +175,11 @@ export const CREATE_PROFILE = gql`
     }
   }
 `
+
+export const UPDATE_PROFILE = gql`
+  mutation($request: UpdateProfileRequest!) {
+    updateProfile(request: $request) {
+      id
+    }
+  }
+`

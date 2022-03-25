@@ -11,12 +11,7 @@ export const EXPLORE_PUBLICATIONS_QUERY = gql`
     $cursor: Cursor!
   ) {
     explorePublications(
-      request: {
-        sortCriteria: $sortCriteria
-        limit: 10
-        cursor: $cursor
-        sources: ["Lenster"]
-      }
+      request: { sortCriteria: $sortCriteria, limit: 10, cursor: $cursor }
     ) {
       items {
         __typename

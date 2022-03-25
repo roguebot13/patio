@@ -27,14 +27,25 @@ export default function Post({ item, quoted = false, mainPost = false }) {
       </div>
       <div className="flex flex-col flex-grow ml-4">
         <div className="flex">
-          <Link href={'/' + item.profile.handle}>
-            <a className="font-semibold link link-primary no-underline hover:underline">
-              {item.profile.name}
-            </a>
-          </Link>
-          <Link href={'/' + item.profile.handle}>
-            <span className="ml-1 cursor-pointer">@{item.profile.handle}</span>
-          </Link>
+          <a
+            className="font-semibold link link-primary no-underline hover:underline"
+            onClick={(e) => {
+              router.push('/' + item.profile.handle)
+              e.stopPropagation()
+            }}
+          >
+            {item.profile.name}
+          </a>
+
+          <span
+            className="ml-1 cursor-pointer"
+            onClick={(e) => {
+              router.push('/' + item.profile.handle)
+              e.stopPropagation()
+            }}
+          >
+            @{item.profile.handle}
+          </span>
 
           {!quoted ? (
             <span className="ml-auto text-sm text-accent-content">

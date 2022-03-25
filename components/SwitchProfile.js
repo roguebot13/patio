@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/client'
 import { useEffect } from 'react'
 import { GET_PROFILE_BY_OWNER } from '../gql/profile'
 import Link from 'next/link'
+import { useDispatch, useSelector } from 'react-redux'
 
 const getConnectedAddress = () => {
   try {
@@ -25,16 +26,13 @@ export default function SwitchProfile({ address }) {
       },
     },
   )
-
   useEffect(refetch, [address])
 
+  const dispatch = useDispatch()
+  const currentProfile = useSelector((state) => state.profile)
+
   const setCurrentProfile = (profile) => {
-    // console.log()
-    // if (getConnectedAddress() === address) {
-    localStorage.setItem('currentProfile', JSON.stringify(profile))
-    // } else {
-    //   console.error('No auth to set current profile')
-    // }
+    dispatch({ type: 'UPDATE_LOCAL_PROFILE', payload: profile })
   }
 
   if (loading) {
@@ -54,12 +52,20 @@ export default function SwitchProfile({ address }) {
 
   return (
     <div className="dropdown">
-      <div tabIndex="0" className="avatar flex-shrink-0">
-        <div className="w-12 h-12 rounded-full bg-primary"></div>
+      <div tabIndex="0" className="flex cursor-pointer">
+        <div className="avatar">
+          <div className="w-12 h-12 rounded-full bg-primary">
+            <img src={currentProfile?.picture?.original?.url} />
+          </div>
+        </div>
+        <div className="ml-4">
+          <div className="font-semibold">{currentProfile?.name}</div>
+          <div>@{currentProfile?.handle}</div>
+        </div>
       </div>
       <ul
         tabIndex="0"
-        className="dropdown-content menu menu-compact bg-base-300 w-48 rounded-lg"
+        className="dropdown-content menu menu-compact bg-base-300 w-48 rounded-lg mt-2"
       >
         {items.map((item) => (
           <li>
