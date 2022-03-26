@@ -71,7 +71,7 @@ export default function SwitchProfile({ address }) {
         className="dropdown-content menu menu-compact bg-base-300 w-48 rounded-lg mt-2"
       >
         {items.map((item) => (
-          <li>
+          <li key={item.id}>
             <a
               className="flex"
               onClick={() => {

@@ -26,7 +26,7 @@ export default function Mirror({ item }) {
           </span>
         </a>
       </Link>
-      <Post item={item} />
+      <Post item={item.mirrorOf} itemMirroredBy={item.profile.id} />
     </>
   )
 }

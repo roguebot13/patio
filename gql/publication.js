@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client'
+import apolloClient from '../apollo-client'
 
 export const GET_PUBLICATION = gql`
   query Publication($publicationId: InternalPublicationId!) {
@@ -578,3 +579,44 @@ export const GET_PUBLICATIONS = gql`
     }
   }
 `
+
+const CREATE_MIRROR_TYPED_DATA = gql`
+  mutation($request: CreateMirrorRequest!) {
+    createMirrorTypedData(request: $request) {
+      id
+      expiresAt
+      typedData {
+        types {
+          MirrorWithSig {
+            name
+            type
+          }
+        }
+        domain {
+          name
+          chainId
+          version
+          verifyingContract
+        }
+        value {
+          nonce
+          deadline
+          profileId
+          profileIdPointed
+          pubIdPointed
+          referenceModule
+          referenceModuleData
+        }
+      }
+    }
+  }
+`
+
+export const createMirrorTypedData = (createMirrorTypedDataRequest) => {
+  return apolloClient.mutate({
+    mutation: CREATE_MIRROR_TYPED_DATA,
+    variables: {
+      request: createMirrorTypedDataRequest,
+    },
+  })
+}

@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'next/link'
 import { notify } from 'reapop'
+import { enabledModules } from '../gql/modules'
 import { pollUntilIndexed } from '../helpers/pollUntilIndexed'
 
 export default function EditProfilePage() {
@@ -17,6 +18,11 @@ export default function EditProfilePage() {
   const [errorMessage, setErrorMessage] = useState(null)
   const currentProfile = useSelector((state) => state.profile)
   const dispatch = useDispatch()
+
+  useEffect(async () => {
+    const res = await enabledModules()
+    console.log('Modules', res)
+  }, [])
 
   return (
     <>

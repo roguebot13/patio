@@ -39,7 +39,7 @@ export default function TimelineFeed({ profileId }) {
   return (
     <>
       {items.map((item) => (
-        <FeedItem item={item} />
+        <FeedItem item={item} key={item.id} />
       ))}
       {showLoadMore ? (
         <div className="text-center p-4">

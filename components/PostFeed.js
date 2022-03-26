@@ -41,7 +41,7 @@ export default function PostFeed({ publicationId }) {
   return (
     <>
       {items.map((item) => (
-        <Post item={item} />
+        <Post item={item} key={item.id} />
       ))}
       {showLoadMore ? (
         <div className="text-center p-4">
