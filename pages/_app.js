@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import ClientOnly from '../components/ClientOnly'
 import PageSelector from '../components/PageSelector'
+import Notifications from '../components/Notifications'
 import rootReducer from '../store/reducers'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
@@ -28,6 +29,7 @@ function MyApp({ Component, pageProps }) {
               </div>
             </div>
           </div>
+          <Notifications />
         </ClientOnly>
       </ApolloProvider>
     </Provider>

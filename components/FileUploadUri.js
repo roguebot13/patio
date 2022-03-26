@@ -3,7 +3,7 @@ import ipfs from '../ipfs-client'
 
 export default function FileUploadUri({
   name = '',
-  label = '',
+  label = null,
   avatar = false,
 }) {
   const [uploading, setUploading] = useState(false)
@@ -11,9 +11,13 @@ export default function FileUploadUri({
 
   return (
     <div className="form-control max-w-md">
-      <label className="label">
-        <span className="label-text">{label}</span>
-      </label>
+      {label ? (
+        <label className="label">
+          <span className="label-text">{label}</span>
+        </label>
+      ) : (
+        ''
+      )}
       {uri ? (
         avatar ? (
           <div className="flex-shrink-0 avatar mb-2">
@@ -23,7 +27,7 @@ export default function FileUploadUri({
           </div>
         ) : (
           <img
-            className="object-fit max-w-md border-grey border rounded-md mb-2"
+            className="object-fit max-w-md border-base-300 border rounded-md mb-2"
             src={uri}
           />
         )

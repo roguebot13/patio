@@ -37,27 +37,34 @@ export default function ExploreFeed({
   }
 
   const items = data.explorePublications.items
-
+  const showLoadMore =
+    data.explorePublications.items.length !=
+      data.explorePublications.pageInfo.totalCount &&
+    data.explorePublications.pageInfo.next
   return (
     <>
       {items.map((item) => (
         <FeedItem item={item} />
       ))}
-      <div className="text-center p-4">
-        <button
-          className="btn btn-primary btn-wide"
-          onClick={() => {
-            fetchMore({
-              variables: {
-                sortCriteria: sortCriteria,
-                cursor: data.explorePublications.pageInfo.next,
-              },
-            })
-          }}
-        >
-          Load More
-        </button>
-      </div>
+      {showLoadMore ? (
+        <div className="text-center p-4">
+          <button
+            className="btn btn-primary btn-wide"
+            onClick={() => {
+              fetchMore({
+                variables: {
+                  sortCriteria: sortCriteria,
+                  cursor: data.explorePublications.pageInfo.next,
+                },
+              })
+            }}
+          >
+            Load More
+          </button>
+        </div>
+      ) : (
+        ''
+      )}
     </>
   )
 }

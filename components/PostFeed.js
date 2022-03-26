@@ -32,27 +32,33 @@ export default function PostFeed({ publicationId }) {
   }
 
   const items = data.publications.items
-
+  const showLoadMore =
+    data.publications.items.length != data.publications.pageInfo.totalCount &&
+    data.publications.pageInfo.next
   return (
     <>
       {items.map((item) => (
         <Post item={item} />
       ))}
-      <div className="text-center p-4">
-        <button
-          className="btn btn-primary btn-wide"
-          onClick={() => {
-            fetchMore({
-              variables: {
-                publicationId: publicationId,
-                cursor: data.publications.pageInfo.next,
-              },
-            })
-          }}
-        >
-          Load More
-        </button>
-      </div>
+      {showLoadMore ? (
+        <div className="text-center p-4">
+          <button
+            className="btn btn-primary btn-wide"
+            onClick={() => {
+              fetchMore({
+                variables: {
+                  publicationId: publicationId,
+                  cursor: data.publications.pageInfo.next,
+                },
+              })
+            }}
+          >
+            Load More
+          </button>
+        </div>
+      ) : (
+        ''
+      )}
     </>
   )
 }

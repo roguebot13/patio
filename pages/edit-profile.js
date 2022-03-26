@@ -1,21 +1,19 @@
 import Head from 'next/head'
 import FileUploadUri from '../components/FileUploadUri'
-import { UPDATE_PROFILE } from '../gql/profile'
-import apolloClient from '../apollo-client'
+import {
+  updateProfile,
+  createSetProfileImageUriTypedData,
+  getProfile,
+} from '../gql/profile'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
-const updateProfile = (request) => {
-  return apolloClient.mutate({
-    mutation: UPDATE_PROFILE,
-    variables: {
-      request,
-    },
-  })
-}
+import Link from 'next/link'
+import { notify } from 'reapop'
+import { pollUntilIndexed } from '../helpers/pollUntilIndexed'
 
 export default function EditProfilePage() {
-  const [loading, setLoading] = useState(false)
+  const [updatingProfile, setUpdatingProfile] = useState(false)
+  const [updatingPicture, setUpdatingPicture] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
   const currentProfile = useSelector((state) => state.profile)
   const dispatch = useDispatch()
@@ -31,32 +29,101 @@ export default function EditProfilePage() {
         <h1 className="text-xl">Edit Profile</h1>
       </div>
       <div className="flex-grow h-0 overflow-auto">
-        <div className="flex px-8 pt-8">
-          <div className="avatar">
-            <div className="w-12 h-12 rounded-full bg-primary">
-              <img src={currentProfile?.picture?.original?.url} />
+        <div className="flex justify-between px-8 pt-8">
+          <div className="flex">
+            <div className="avatar">
+              <div className="w-14 h-14 rounded-full bg-primary">
+                <img src={currentProfile?.picture?.original?.url} />
+              </div>
+            </div>
+            <div className="ml-4">
+              <div className="font-semibold">{currentProfile?.name}</div>
+              <div>@{currentProfile?.handle}</div>
             </div>
           </div>
-          <div className="ml-4">
-            <div className="font-semibold">{currentProfile?.name}</div>
-            <div>@{currentProfile?.handle}</div>
+          <div>
+            <Link href={'/' + currentProfile?.handle}>
+              <a className="btn btn-sm btn-outline">View Profile</a>
+            </Link>
           </div>
         </div>
+        <form
+          className="p-8 flex items-end gap-4"
+          onSubmit={async (e) => {
+            e.stopPropagation()
+            e.preventDefault()
+            setUpdatingPicture(true)
+            const request = {
+              profileId: currentProfile.id,
+              url: e.target.elements.url.value.trim(),
+            }
+            if (request.url === '') {
+              request.url = null
+            }
+            console.log(request)
+
+            // const { data, errors } = await createSetProfileImageUriTypedData(request)
+            const result = await createSetProfileImageUriTypedData(request)
+            const typedData =
+              result.data.createSetProfileImageURITypedData.typedData
+
+            const { signedTypeData, splitSignature } = await import(
+              '../ethers-service'
+            )
+            const signature = await signedTypeData(
+              typedData.domain,
+              typedData.types,
+              typedData.value,
+            )
+            const { v, r, s } = splitSignature(signature)
+            const lensHub = (await import('../lens-hub')).lensHub
+            const tx = await lensHub.setProfileImageURIWithSig({
+              profileId: typedData.value.profileId,
+              imageURI: typedData.value.imageURI,
+              sig: {
+                v,
+                r,
+                s,
+                deadline: typedData.value.deadline,
+              },
+            })
+            const res = await pollUntilIndexed(tx.hash)
+            console.log(res)
+            if (res && res.indexed) {
+              const updatedProfile = await getProfile(currentProfile.handle)
+              dispatch({
+                type: 'UPDATE_LOCAL_PROFILE',
+                payload: updatedProfile.data.profiles.items[0],
+              })
+              dispatch(notify('Profile image updated', 'info'))
+            }
+            setUpdatingPicture(false)
+          }}
+        >
+          <FileUploadUri name="url" label="Profile picture url" avatar={true} />
+          <button
+            type="submit"
+            className={'btn btn-primary' + (updatingPicture ? ' loading' : '')}
+            disabled={updatingPicture}
+          >
+            Update Profile Picture
+          </button>
+        </form>
         <form
           className="p-8 flex flex-col gap-4"
           onSubmit={async (e) => {
             e.stopPropagation()
             e.preventDefault()
-            setLoading(true)
+            setUpdatingProfile(true)
             setErrorMessage(null)
             const request = {
-              profileId: e.target.elements.profileId.value,
-              name: e.target.elements.name.value,
+              profileId: currentProfile.id,
+              name: e.target.elements.name.value.trim(),
               bio: e.target.elements.bio.value,
-              location: e.target.elements.location.value,
-              website: e.target.elements.website.value,
-              twitterUrl: e.target.elements.twitterUrl.value,
-              coverPicture: e.target.elements.coverPicture.value,
+              location: e.target.elements.location.value.trim(),
+              website: e.target.elements.website.value.trim(),
+              twitterUrl: e.target.elements.twitterUrl.value.trim(),
+              coverPicture: e.target.elements.coverPicture.value.trim(),
             }
             if (request.website === '') {
               request.website = null
@@ -71,7 +138,12 @@ export default function EditProfilePage() {
                 setErrorMessage(errors[0].message)
               }
               if (data && data.updateProfile) {
-                //TODO: Fetch profile data and save again
+                const updatedProfile = await getProfile(currentProfile.handle)
+                dispatch({
+                  type: 'UPDATE_LOCAL_PROFILE',
+                  payload: updatedProfile.data.profiles.items[0],
+                })
+                dispatch(notify('Profile updated', 'success'))
               } else {
                 setErrorMessage('Unknown error')
               }
@@ -79,16 +151,9 @@ export default function EditProfilePage() {
               console.error(e)
               setErrorMessage(e.message)
             }
-            setLoading(false)
+            setUpdatingProfile(false)
           }}
         >
-          <input
-            name="profileId"
-            className="input input-bordered"
-            disabled
-            hidden
-            value={currentProfile?.id}
-          ></input>
           <div className="form-control max-w-xs">
             <label className="label">
               <span className="label-text">Profile name</span>
@@ -155,9 +220,9 @@ export default function EditProfilePage() {
             <button
               type="submit"
               className={
-                'btn btn-wide btn-primary' + (loading ? ' loading' : '')
+                'btn btn-wide btn-primary' + (updatingProfile ? ' loading' : '')
               }
-              disabled={loading}
+              disabled={updatingProfile}
             >
               Update Profile
             </button>

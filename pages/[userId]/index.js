@@ -1,24 +1,88 @@
 import Head from 'next/head'
 import { useQuery } from '@apollo/client'
-import { GET_PROFILE_BY_HANDLE, GET_PROFILE_BY_OWNER } from '../../gql/profile'
+import apolloClient from '../../apollo-client'
+import { GET_PROFILE_BY_HANDLE, getProfile } from '../../gql/profile'
+import { CREATE_FOLLOW_TYPED_DATA } from '../../gql/follow'
 import { useRouter } from 'next/router'
-import { ethers } from 'ethers'
 import TimelineFeed from '../../components/TimelineFeed'
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { pollUntilIndexed } from '../../helpers/pollUntilIndexed'
+
+export const createFollowTypedData = (followRequestInfo) => {
+  return apolloClient.mutate({
+    mutation: CREATE_FOLLOW_TYPED_DATA,
+    variables: {
+      request: {
+        follow: followRequestInfo,
+      },
+    },
+  })
+}
 
 export default function UserPage() {
   const router = useRouter()
-  let gqlVariables = {},
-    gqlQuery
-  if (ethers.utils.isAddress(router.query.userId)) {
-    gqlQuery = GET_PROFILE_BY_OWNER
-    gqlVariables = { address: router.query.userId }
-  } else {
-    gqlQuery = GET_PROFILE_BY_HANDLE
-    gqlVariables = { handle: router.query.userId }
+  const dispatch = useDispatch()
+  const currentProfile = useSelector((state) => state.profile)
+
+  const { data, loading, error, fetchMore, refetch } = useQuery(
+    GET_PROFILE_BY_HANDLE,
+    {
+      variables: { handle: router.query.userId },
+    },
+  )
+
+  const [followReqestLoading, setFollowReqestLoading] = useState(false)
+
+  const follow = async () => {
+    setFollowReqestLoading(true)
+    try {
+      const {
+        signedTypeData,
+        splitSignature,
+        getAddressFromSigner,
+      } = await import('../../ethers-service')
+      const request = [{ profile: data.profiles.items[0].id }]
+      const result = await createFollowTypedData(request)
+      const typedData = result.data.createFollowTypedData.typedData
+
+      const signature = await signedTypeData(
+        typedData.domain,
+        typedData.types,
+        typedData.value,
+      )
+      const { v, r, s } = splitSignature(signature)
+
+      const lensHub = (await import('../../lens-hub')).lensHub
+      const followReq = {
+        follower: await getAddressFromSigner(),
+        profileIds: typedData.value.profileIds,
+        datas: typedData.value.datas,
+        sig: {
+          v,
+          r,
+          s,
+          deadline: typedData.value.deadline,
+        },
+      }
+      console.log('followReq', followReq)
+      const tx = await lensHub.followWithSig(followReq)
+      const res = await pollUntilIndexed(tx.hash)
+      console.log(res)
+      if (res && res.indexed) {
+        const updatedProfile = await getProfile(currentProfile.handle)
+        refetch()
+        dispatch({
+          type: 'UPDATE_LOCAL_PROFILE',
+          payload: updatedProfile.data.profiles.items[0],
+        })
+        dispatch(notify('Following' + data.profiles.items[0].handle, 'info'))
+      }
+    } catch (e) {
+      console.error(e)
+    }
+    setFollowReqestLoading(false)
   }
-  const { data, loading, error, fetchMore, refetch } = useQuery(gqlQuery, {
-    variables: gqlVariables,
-  })
 
   if (loading) {
     return (
@@ -64,6 +128,17 @@ export default function UserPage() {
             <h4>@{profile.handle}</h4>
             <p>{profile.bio}</p>
 
+            <button
+              className={
+                'btn btn-sm btn-primary w-32' +
+                (followReqestLoading ? ' loading' : '')
+              }
+              onClick={follow}
+              disabled={followReqestLoading}
+            >
+              Follow {profile.followModule?.amount.value}{' '}
+              {profile.followModule?.amount.asset.symbol}
+            </button>
             <div className="flex gap-2">
               <div className="flex items-center mt-4">
                 <svg

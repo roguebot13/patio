@@ -1,7 +1,6 @@
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import apolloClient from '../apollo-client'
-import { getAddress, signText } from '../ethers-service'
 import parseJwt from '../helpers/parseJwt'
 
 import {
@@ -83,6 +82,7 @@ export default function ConnectWallet() {
 
   const login = async () => {
     setLoading(true)
+    const { getAddress, signText } = await import('../ethers-service')
     // we grab the address of the connected wallet
     try {
       const address = await getAddress()

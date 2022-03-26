@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client'
+import apolloClient from '../apollo-client'
 
 export const GET_PROFILE_BY_OWNER = gql`
   query Profiles($address: EthereumAddress!) {
@@ -183,3 +184,59 @@ export const UPDATE_PROFILE = gql`
     }
   }
 `
+
+export const CREATE_SET_PROFILE_IMAGE_URI_TYPED_DATA = gql`
+  mutation($request: UpdateProfileImageRequest!) {
+    createSetProfileImageURITypedData(request: $request) {
+      id
+      expiresAt
+      typedData {
+        domain {
+          name
+          chainId
+          version
+          verifyingContract
+        }
+        types {
+          SetProfileImageURIWithSig {
+            name
+            type
+          }
+        }
+        value {
+          nonce
+          deadline
+          imageURI
+          profileId
+        }
+      }
+    }
+  }
+`
+
+export const updateProfile = (request) => {
+  return apolloClient.mutate({
+    mutation: UPDATE_PROFILE,
+    variables: {
+      request,
+    },
+  })
+}
+
+export const createSetProfileImageUriTypedData = (request) => {
+  return apolloClient.mutate({
+    mutation: CREATE_SET_PROFILE_IMAGE_URI_TYPED_DATA,
+    variables: {
+      request,
+    },
+  })
+}
+
+export const getProfile = (handle) => {
+  return apolloClient.query({
+    query: GET_PROFILE_BY_HANDLE,
+    variables: {
+      handle,
+    },
+  })
+}

@@ -49,6 +49,9 @@ export default function SwitchProfile({ address }) {
   }
 
   const items = data.profiles.items
+  const showLoadMore =
+    data.profiles.items.length != data.profiles.pageInfo.totalCount &&
+    data.profiles.pageInfo.next
 
   return (
     <div className="dropdown">
@@ -87,7 +90,7 @@ export default function SwitchProfile({ address }) {
             </a>
           </li>
         ))}
-        {data.profiles.pageInfo.next ? (
+        {showLoadMore ? (
           <li>
             <a
               className="btn btn-primary"

@@ -32,27 +32,34 @@ export default function TimelineFeed({ profileId }) {
   }
 
   const items = data.timeline.items
+  const showLoadMore =
+    data.timeline.items.length != data.timeline.pageInfo.totalCount &&
+    data.timeline.pageInfo.next
 
   return (
     <>
       {items.map((item) => (
         <FeedItem item={item} />
       ))}
-      <div className="text-center p-4">
-        <button
-          className="btn btn-primary btn-wide"
-          onClick={() => {
-            fetchMore({
-              variables: {
-                profileId: profileId,
-                cursor: data.timeline.pageInfo.next,
-              },
-            })
-          }}
-        >
-          Load More
-        </button>
-      </div>
+      {showLoadMore ? (
+        <div className="text-center p-4">
+          <button
+            className="btn btn-primary btn-wide"
+            onClick={() => {
+              fetchMore({
+                variables: {
+                  profileId: profileId,
+                  cursor: data.timeline.pageInfo.next,
+                },
+              })
+            }}
+          >
+            Load More
+          </button>
+        </div>
+      ) : (
+        ''
+      )}
     </>
   )
 }

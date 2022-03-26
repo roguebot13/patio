@@ -1,9 +1,11 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import ConnectWallet from './ConnectWallet'
+import { useSelector } from 'react-redux'
 
 export default function PageSelector({ active = 'home' }) {
   const router = useRouter()
+  const currentProfile = useSelector((state) => state.profile)
   return (
     <div className="flex flex-col flex-shrink-0 w-64 py-8 pr-3">
       <ConnectWallet />
@@ -47,6 +49,34 @@ export default function PageSelector({ active = 'home' }) {
                 />
               </svg>
               <span>Explore</span>
+            </a>
+          </Link>
+        </li>
+        <li
+          className={
+            router.pathname === '/[userId]' &&
+            router.query?.userId === currentProfile?.handle
+              ? 'bordered'
+              : ''
+          }
+        >
+          <Link href={'/' + currentProfile?.handle}>
+            <a className="flex">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+              <span>Profile</span>
             </a>
           </Link>
         </li>
