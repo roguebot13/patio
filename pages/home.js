@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useSelector } from 'react-redux'
+import TimelineFeed from '../components/TimelineFeed'
 
 export default function HomePage() {
   const currentProfile = useSelector((state) => state.profile)
@@ -16,24 +17,27 @@ export default function HomePage() {
       </div>
       <div className="flex-grow h-0 overflow-auto">
         {currentProfile.id ? (
-          <div className="flex w-full p-8 border-b border-base-300">
-            <span className="flex-shrink-0 w-12 h-12 bg-primary rounded-full"></span>
-            <div className="flex flex-col flex-grow ml-4">
-              <textarea
-                className="textarea textarea-bordered"
-                name=""
-                id=""
-                rows="3"
-                placeholder="What's happening?"
-              ></textarea>
-              <div className="flex justify-between mt-2">
-                <button className="flex items-center h-8 px-3 text-xs rounded-sm hover:bg-base-200">
-                  Attach
-                </button>
-                <button className="btn btn-primary">Post</button>
+          <>
+            <div className="flex w-full p-8 border-b border-base-300">
+              <span className="flex-shrink-0 w-12 h-12 bg-primary rounded-full"></span>
+              <div className="flex flex-col flex-grow ml-4">
+                <textarea
+                  className="textarea textarea-bordered"
+                  name=""
+                  id=""
+                  rows="3"
+                  placeholder="What's happening?"
+                ></textarea>
+                <div className="flex justify-between mt-2">
+                  <button className="flex items-center h-8 px-3 text-xs rounded-sm hover:bg-base-200">
+                    Attach
+                  </button>
+                  <button className="btn btn-primary">Post</button>
+                </div>
               </div>
             </div>
-          </div>
+            <TimelineFeed profileId={currentProfile.id} />
+          </>
         ) : (
           <div>
             <div className="px-8 pt-8 text-center">

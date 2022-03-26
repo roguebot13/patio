@@ -1,17 +1,18 @@
 import { useQuery } from '@apollo/client'
 import { useEffect } from 'react'
 import { GET_PUBLICATIONS } from '../gql/publication'
-import Post from './Post'
+import FeedItem from './FeedItem'
 
-export default function PostFeed({ publicationId }) {
-  if (!publicationId || publicationId === '') return null
+export default function UserFeed({ profileId }) {
+  if (!profileId || profileId === '') return null
 
   const { data, loading, error, fetchMore, refetch } = useQuery(
     GET_PUBLICATIONS,
     {
       variables: {
         request: {
-          commentsOf: publicationId,
+          profileId: profileId,
+          publicationTypes: ['POST', 'COMMENT', 'MIRROR'],
           cursor: '{}',
           limit: 10,
         },
@@ -19,7 +20,7 @@ export default function PostFeed({ publicationId }) {
     },
   )
 
-  useEffect(refetch, [publicationId])
+  useEffect(refetch, [profileId])
 
   if (loading) {
     return (
@@ -38,10 +39,11 @@ export default function PostFeed({ publicationId }) {
   const showLoadMore =
     data.publications.items.length != data.publications.pageInfo.totalCount &&
     data.publications.pageInfo.next
+
   return (
     <>
       {items.map((item) => (
-        <Post item={item} />
+        <FeedItem item={item} />
       ))}
       {showLoadMore ? (
         <div className="text-center p-4">
@@ -50,11 +52,8 @@ export default function PostFeed({ publicationId }) {
             onClick={() => {
               fetchMore({
                 variables: {
-                  request: {
-                    commentsOf: publicationId,
-                    cursor: data.publications.pageInfo.next,
-                    limit: 10,
-                  },
+                  profileId: profileId,
+                  cursor: data.publications.pageInfo.next,
                 },
               })
             }}

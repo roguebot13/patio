@@ -106,7 +106,7 @@ export default function EditProfilePage() {
             className={'btn btn-primary' + (updatingPicture ? ' loading' : '')}
             disabled={updatingPicture}
           >
-            Update Profile Picture
+            Update Picture
           </button>
         </form>
         <form

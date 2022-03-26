@@ -72,6 +72,18 @@ const client = new ApolloClient({
               }
             },
           },
+          // profiles: {
+          //   keyArgs: ['address', 'handle'],
+
+          //   // Concatenate the incoming list items with
+          //   // the existing list items.
+          //   merge(existing = { items: [] }, incoming) {
+          //     return {
+          //       ...incoming,
+          //       items: [...existing.items, ...incoming.items],
+          //     }
+          //   },
+          // },
         },
       },
     },
