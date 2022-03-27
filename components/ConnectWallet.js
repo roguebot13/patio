@@ -87,7 +87,10 @@ export default function ConnectWallet() {
     // we grab the address of the connected wallet
     try {
       const address = await getAddress()
-
+      if (!address) {
+        setLoading(false)
+        return
+      }
       // we request a challenge from the server
       const challengeResponse = await generateChallenge(address)
 

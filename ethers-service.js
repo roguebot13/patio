@@ -34,6 +34,7 @@ export const sendTx = (transaction) => {
 
 export const getAddress = async () => {
   if (typeof window === 'undefined') return null
+  if (!window.ethereum) return null
   const accounts = await window.ethereum.request({
     method: 'eth_requestAccounts',
   })

@@ -22,7 +22,7 @@ export default function CreateProfilePage() {
     <>
       <Head>
         <title>Create Profile - Patio</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
       </Head>
 
       <div className="flex justify-between flex-shrink-0 px-8 py-4 border-b border-base-300">

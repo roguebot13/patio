@@ -24,7 +24,7 @@ export default function EditProfilePage() {
       <>
         <Head>
           <title>Edit Profile - Patio</title>
-          <link rel="icon" href="/favicon.ico" />
+          <link rel="icon" href="/favicon.png" />
         </Head>
         <div className="flex justify-between flex-shrink-0 px-8 py-4 border-b border-base-300">
           <h1 className="text-xl">Edit Profile</h1>
@@ -51,7 +51,7 @@ export default function EditProfilePage() {
     <>
       <Head>
         <title>Edit Profile - Patio</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
       </Head>
 
       <div className="flex justify-between flex-shrink-0 px-8 py-4 border-b border-base-300">

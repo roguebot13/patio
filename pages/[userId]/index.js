@@ -116,7 +116,7 @@ export default function UserPage() {
         <title>
           {profile.name} (@{profile.handle}) - Patio
         </title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
       </Head>
 
       <div className="flex-grow h-0 overflow-auto">

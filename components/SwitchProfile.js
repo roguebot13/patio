@@ -100,7 +100,7 @@ export default function SwitchProfile({ address, logout }) {
         {showLoadMore ? (
           <li>
             <a
-              className="btn btn-secondary rounded-none"
+              className="btn btn-ghost rounded-none"
               onClick={() => {
                 fetchMore({
                   variables: {
@@ -118,7 +118,7 @@ export default function SwitchProfile({ address, logout }) {
         )}
         <li>
           <Link href="/create-profile">
-            <a className="btn rounded-none">Create Profile</a>
+            <a className="btn btn-ghost rounded-none">Create Profile</a>
           </Link>
         </li>
         <li>

@@ -15,7 +15,7 @@ export default function ExplorePage() {
     <>
       <Head>
         <title>Explore - Patio</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
       </Head>
 
       <div className="flex flex-col flex-grow border-l border-r border-base-300">
