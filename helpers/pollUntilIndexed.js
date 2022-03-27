@@ -19,11 +19,17 @@ const sleep = (milliseconds) => {
 }
 
 export const pollUntilIndexed = async (txHash) => {
-  while (true) {
+  const retry = 10
+  while (retry) {
     const result = await hasTxBeenIndexed(txHash)
     const response = result.data.hasTxHashBeenIndexed
     if (response.__typename === 'TransactionIndexedResult') {
       if (response.metadataStatus) {
+        if (response.metadataStatus.status === 'PENDING') {
+          await sleep(5000)
+          retry--
+          continue
+        }
         if (response.metadataStatus.status === 'SUCCESS') {
           return response
         }
@@ -36,6 +42,7 @@ export const pollUntilIndexed = async (txHash) => {
           return response
         }
         await sleep(1000)
+        retry--
         continue
       }
     }
@@ -44,4 +51,5 @@ export const pollUntilIndexed = async (txHash) => {
     // it got reverted and failed!
     // throw new Error(response.reason)
   }
+  throw new Error('Timed out')
 }

@@ -64,3 +64,39 @@ export const enabledModules = () => {
     query: ENABLED_MODULES,
   })
 }
+
+const ENABLED_CURRENCIES = gql`
+  query {
+    enabledModuleCurrencies {
+      name
+      symbol
+      decimals
+      address
+    }
+  }
+`
+
+export const enabledCurrencies = () => {
+  return apolloClient.query({
+    query: ENABLED_CURRENCIES,
+  })
+}
+
+const MODULE_APPROVAL_DATA = gql`
+  query($request: GenerateModuleCurrencyApprovalDataRequest!) {
+    generateModuleCurrencyApprovalData(request: $request) {
+      to
+      from
+      data
+    }
+  }
+`
+
+export const getModuleApprovalData = (moduleApprovalRequest) => {
+  return apolloClient.query({
+    query: MODULE_APPROVAL_DATA,
+    variables: {
+      request: moduleApprovalRequest,
+    },
+  })
+}

@@ -63,6 +63,7 @@ export default function CreateMirror({ item, itemMirroredBy }) {
       }
     } catch (e) {
       console.error(e)
+      dispatch(notify(e.message, 'error'))
     }
     setMirrorReqPending(false)
   }

@@ -1,16 +1,20 @@
 import { useState } from 'react'
 import ipfs from '../ipfs-client'
+import { useDispatch } from 'react-redux'
+import { notify } from 'reapop'
 
 export default function FileUploadUri({
   name = '',
   label = null,
   avatar = false,
+  defaultValue = '',
 }) {
   const [uploading, setUploading] = useState(false)
-  const [uri, setUri] = useState('')
+  const [uri, setUri] = useState(defaultValue)
+  const dispatch = useDispatch()
 
   return (
-    <div className="form-control max-w-md">
+    <div className="form-control w-full max-w-md">
       {label ? (
         <label className="label">
           <span className="label-text">{label}</span>
@@ -59,12 +63,11 @@ export default function FileUploadUri({
               setUploading(true)
               try {
                 const file = e.target.files[0]
-                console.log(file)
                 const res = await ipfs.add(file)
-                console.log(res)
                 setUri('https://ipfs.infura.io/ipfs/' + res.path)
               } catch (e) {
                 console.error(e)
+                dispatch(notify(e.message, 'error'))
               }
               setUploading(false)
             }}

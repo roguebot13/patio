@@ -16,7 +16,6 @@ export const getAddressFromSigner = async () => {
 
 export const signedTypeData = (domain, types, value) => {
   const signer = getSigner()
-  console.log('signer', domain, types, value)
   return signer._signTypedData(
     omitDeep(domain, '__typename'),
     omitDeep(types, '__typename'),

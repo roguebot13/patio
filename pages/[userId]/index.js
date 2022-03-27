@@ -90,6 +90,7 @@ export default function UserPage() {
       }
     } catch (e) {
       console.error(e)
+      dispatch(notify(e.message, 'error'))
     }
     setFollowReqestLoading(false)
   }

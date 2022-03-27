@@ -2,7 +2,8 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import apolloClient from '../apollo-client'
 import parseJwt from '../helpers/parseJwt'
-
+import { useDispatch } from 'react-redux'
+import { notify } from 'reapop'
 import {
   GET_CHALLENGE,
   AUTHENTICATION,
@@ -47,6 +48,7 @@ const reauthenticate = (refreshToken) => {
 export default function ConnectWallet() {
   const [walletConnected, setWalletConnected] = useState(false)
   const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
 
   const storeTokens = (tokens) => {
     if (tokens) {
@@ -97,6 +99,7 @@ export default function ConnectWallet() {
       storeTokens(tokens?.data?.authenticate)
     } catch (e) {
       console.error(e)
+      dispatch(notify(e.message, 'error'))
       setWalletConnected(false)
     }
     setLoading(false)

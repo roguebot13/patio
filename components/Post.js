@@ -2,6 +2,8 @@ import dayjs from 'dayjs'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import CreateMirror from './createMirror'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 export default function Post({
   item,
@@ -61,9 +63,11 @@ export default function Post({
             ''
           )}
         </div>
-        <p className="mt-1 max-h-48 text-ellipsis overflow-hidden">
-          {item.metadata.content}
-        </p>
+        <div className="mt-1 max-h-48 text-ellipsis overflow-hidden">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {item.metadata.content}
+          </ReactMarkdown>
+        </div>
         {!quoted ? (
           <div className="flex mt-2 -ml-2 gap-2">
             <button

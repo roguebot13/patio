@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'next/link'
 import { notify } from 'reapop'
-import { enabledModules } from '../gql/modules'
+import { enabledCurrencies } from '../gql/modules'
 import { pollUntilIndexed } from '../helpers/pollUntilIndexed'
 
 export default function EditProfilePage() {
@@ -19,9 +19,32 @@ export default function EditProfilePage() {
   const currentProfile = useSelector((state) => state.profile)
   const dispatch = useDispatch()
 
+  if (!currentProfile?.id) {
+    return (
+      <>
+        <Head>
+          <title>Edit Profile - Patio</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <div className="flex justify-between flex-shrink-0 px-8 py-4 border-b border-base-300">
+          <h1 className="text-xl">Edit Profile</h1>
+        </div>
+        <div className="flex-grow h-0 overflow-auto">
+          <div className="px-8 pt-8 text-center">
+            Please create a profile first
+          </div>
+          <div className="p-8 text-center">
+            <Link href="/create-profile">
+              <a className="btn btn-wide btn-primary">Create Profile</a>
+            </Link>
+          </div>
+        </div>
+      </>
+    )
+  }
   useEffect(async () => {
-    const res = await enabledModules()
-    console.log('Modules', res)
+    const res = await enabledCurrencies()
+    console.log('Currencies', res)
   }, [])
 
   return (
@@ -35,23 +58,9 @@ export default function EditProfilePage() {
         <h1 className="text-xl">Edit Profile</h1>
       </div>
       <div className="flex-grow h-0 overflow-auto">
-        <div className="flex justify-between px-8 pt-8">
-          <div className="flex">
-            <div className="avatar">
-              <div className="w-14 h-14 rounded-full bg-primary">
-                <img src={currentProfile?.picture?.original?.url} />
-              </div>
-            </div>
-            <div className="ml-4">
-              <div className="font-semibold">{currentProfile?.name}</div>
-              <div>@{currentProfile?.handle}</div>
-            </div>
-          </div>
-          <div>
-            <Link href={'/' + currentProfile?.handle}>
-              <a className="btn btn-sm btn-outline">View Profile</a>
-            </Link>
-          </div>
+        <div className="px-8 pt-8">
+          <div className="font-semibold">{currentProfile?.name}</div>
+          <div className="text-sm">@{currentProfile?.handle}</div>
         </div>
         <form
           className="p-8 flex items-end gap-4"
@@ -106,7 +115,12 @@ export default function EditProfilePage() {
             setUpdatingPicture(false)
           }}
         >
-          <FileUploadUri name="url" label="Profile picture url" avatar={true} />
+          <FileUploadUri
+            name="url"
+            label="Profile picture url"
+            avatar={true}
+            defaultValue={currentProfile?.picture?.original.url}
+          />
           <button
             type="submit"
             className={'btn btn-primary' + (updatingPicture ? ' loading' : '')}
@@ -184,21 +198,37 @@ export default function EditProfilePage() {
             <label className="label">
               <span className="label-text">Location</span>
             </label>
-            <input name="location" className="input input-bordered"></input>
+            <input
+              name="location"
+              className="input input-bordered"
+              defaultValue={currentProfile?.location || ''}
+            ></input>
           </div>
           <div className="form-control max-w-md">
             <label className="label">
               <span className="label-text">Website</span>
             </label>
-            <input name="website" className="input input-bordered"></input>
+            <input
+              name="website"
+              className="input input-bordered"
+              defaultValue={currentProfile?.website || ''}
+            ></input>
           </div>
           <div className="form-control max-w-md">
             <label className="label">
               <span className="label-text">Twitter profile link</span>
             </label>
-            <input name="twitterUrl" className="input input-bordered"></input>
+            <input
+              name="twitterUrl"
+              className="input input-bordered"
+              defaultValue={currentProfile?.twitterUrl || ''}
+            ></input>
           </div>
-          <FileUploadUri name="coverPicture" label="Cover picture url" />
+          <FileUploadUri
+            name="coverPicture"
+            label="Cover picture url"
+            defaultValue={currentProfile?.coverPicture?.original.url}
+          />
 
           {errorMessage ? (
             <div className="alert alert-error mt-6">

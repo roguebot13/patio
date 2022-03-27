@@ -6,7 +6,7 @@ try {
     url: 'https://ipfs.infura.io:5001/api/v0',
   })
 } catch (error) {
-  console.error('IPFS error ', error)
+  console.error(error)
   ipfs = undefined
 }
 
