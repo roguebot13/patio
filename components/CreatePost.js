@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { createPostTypedData } from '../gql/publication'
+import { createPostTypedData, createCommentTypedData } from '../gql/publication'
 import { pollUntilIndexed } from '../helpers/pollUntilIndexed'
 import { notify } from 'reapop'
 import { prepareMetadata } from '../helpers/prepareMetadata'
@@ -86,7 +86,11 @@ const renderCollectModuleParams = (collectModule) => {
   }
 }
 
-export default function CreatePost() {
+export default function CreatePost({
+  commentMode = false,
+  publicationId = null,
+  onSuccess = () => {},
+}) {
   const currentProfile = useSelector((state) => state.profile)
   const dispatch = useDispatch()
   const [creatingPost, setCreatingPost] = useState(false)
@@ -123,7 +127,7 @@ export default function CreatePost() {
     setCreatingPost(true)
     const metadataUrl = await uploadMetadata(metadata)
     console.log(metadataUrl)
-    const createPostRequest = {
+    let createPostRequest = {
       profileId: currentProfile?.id,
       contentURI: metadataUrl,
       collectModule: {
@@ -133,10 +137,19 @@ export default function CreatePost() {
         followerOnlyReferenceModule: false,
       },
     }
+    if (commentMode) {
+      createPostRequest.publicationId = publicationId
+    }
 
     try {
-      const result = await createPostTypedData(createPostRequest)
-      const typedData = result.data.createPostTypedData.typedData
+      let typedData
+      if (commentMode) {
+        const result = await createCommentTypedData(createPostRequest)
+        typedData = result.data.createCommentTypedData.typedData
+      } else {
+        const result = await createPostTypedData(createPostRequest)
+        typedData = result.data.createPostTypedData.typedData
+      }
 
       const { signedTypeData, splitSignature } = await import(
         '../ethers-service'
@@ -149,28 +162,48 @@ export default function CreatePost() {
       const { v, r, s } = splitSignature(signature)
 
       const lensHub = (await import('../lens-hub')).lensHub
-      const tx = await lensHub.postWithSig({
-        profileId: typedData.value.profileId,
-        contentURI: typedData.value.contentURI,
-        collectModule: typedData.value.collectModule,
-        collectModuleData: typedData.value.collectModuleData,
-        referenceModule: typedData.value.referenceModule,
-        referenceModuleData: typedData.value.referenceModuleData,
-        sig: {
-          v,
-          r,
-          s,
-          deadline: typedData.value.deadline,
-        },
-      })
+      let tx
+      if (commentMode) {
+        tx = await lensHub.commentWithSig({
+          profileId: typedData.value.profileId,
+          contentURI: typedData.value.contentURI,
+          profileIdPointed: typedData.value.profileIdPointed,
+          pubIdPointed: typedData.value.pubIdPointed,
+          collectModule: typedData.value.collectModule,
+          collectModuleData: typedData.value.collectModuleData,
+          referenceModule: typedData.value.referenceModule,
+          referenceModuleData: typedData.value.referenceModuleData,
+          sig: {
+            v,
+            r,
+            s,
+            deadline: typedData.value.deadline,
+          },
+        })
+      } else {
+        tx = await lensHub.postWithSig({
+          profileId: typedData.value.profileId,
+          contentURI: typedData.value.contentURI,
+          collectModule: typedData.value.collectModule,
+          collectModuleData: typedData.value.collectModuleData,
+          referenceModule: typedData.value.referenceModule,
+          referenceModuleData: typedData.value.referenceModuleData,
+          sig: {
+            v,
+            r,
+            s,
+            deadline: typedData.value.deadline,
+          },
+        })
+      }
 
       const res = await pollUntilIndexed(tx.hash)
       console.log(res)
       if (res && res.indexed) {
-        dispatch(notify('Created Post', 'success'))
-        // if (modalShowRef && modalShowRef.current) {
-        //   modalShowRef.current.checked = false
-        // }
+        dispatch(
+          notify('Created ' + (commentMode ? 'Comment' : 'Post'), 'success'),
+        )
+        if (commentMode && onSuccess) onSuccess()
       }
     } catch (e) {
       console.error(e)
@@ -180,7 +213,11 @@ export default function CreatePost() {
   }
 
   return (
-    <div className="flex w-full p-8 border-b border-base-300">
+    <div
+      className={
+        'flex w-full' + (commentMode ? ' p-2' : ' p-8 border-b border-base-300')
+      }
+    >
       <div className="flex-shrink-0 avatar">
         <div className="w-12 h-12 bg-primary rounded-full">
           <img src={currentProfile?.picture?.original.url} />
@@ -349,7 +386,7 @@ export default function CreatePost() {
               type="submit"
               disabled={creatingPost}
             >
-              Post
+              {commentMode ? 'Comment' : 'Post'}
             </button>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import CreateMirror from './createMirror'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import CreateComment from './CreateComment'
 
 export default function Post({
   item,
@@ -70,29 +71,13 @@ export default function Post({
         </div>
         {!quoted ? (
           <div className="flex mt-2 -ml-2 gap-2">
-            <button
-              className="btn btn-sm btn-ghost tooltip tooltip-bottom flex items-center"
-              data-tip="Comment"
+            <div
               onClick={(e) => {
                 e.stopPropagation()
               }}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                />
-              </svg>
-              <span>{item.stats.totalAmountOfComments}</span>
-            </button>
+              <CreateComment item={item} />
+            </div>
             <div
               onClick={(e) => {
                 e.stopPropagation()

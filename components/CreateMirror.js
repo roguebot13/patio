@@ -101,13 +101,13 @@ export default function CreateMirror({ item, itemMirroredBy }) {
         ref={modalShowRef}
       />
       <label className="modal cursor-pointer" htmlFor={'mirror-' + item.id}>
-        <label className="modal-box relative" htmlFor="">
+        <label className="modal-box relative max-w-xs" htmlFor="">
           <div className="form-control">
             <label className="label cursor-pointer">
               <span className="label-text">Allow only followers to mirror</span>
               <input
                 type="checkbox"
-                className="toggle"
+                className="toggle toggle-sm"
                 checked={followerOnlyReferenceModule}
                 onChange={() =>
                   setFollowerOnlyReferenceModule(!followerOnlyReferenceModule)
@@ -116,12 +116,10 @@ export default function CreateMirror({ item, itemMirroredBy }) {
             </label>
           </div>
           <div className="modal-action">
-            <label htmlFor={'mirror-' + item.id} className="btn btn-ghost">
-              Cancel
-            </label>
             <button
               className={
-                'btn btn-primary' + (mirrorReqPending ? ' loading' : '')
+                'btn btn-primary btn-sm w-32' +
+                (mirrorReqPending ? ' loading' : '')
               }
               disabled={mirrorReqPending}
               onClick={createMirror}
