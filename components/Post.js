@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import CreateMirror from './createMirror'
+import CreateMirror from './CreateMirror'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import CreateComment from './CreateComment'

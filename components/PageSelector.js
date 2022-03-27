@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 import ConnectWallet from './ConnectWallet'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
-import { themeChange } from 'theme-change'
 
 export default function PageSelector({ active = 'home' }) {
   const router = useRouter()
