@@ -9,6 +9,7 @@ export default function PostFeed({ publicationId }) {
   const { data, loading, error, fetchMore, refetch } = useQuery(
     GET_PUBLICATIONS,
     {
+      fetchPolicy: 'no-cache',
       variables: {
         request: {
           commentsOf: publicationId,

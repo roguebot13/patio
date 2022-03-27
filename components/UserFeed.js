@@ -9,6 +9,7 @@ export default function UserFeed({ profileId }) {
   const { data, loading, error, fetchMore, refetch } = useQuery(
     GET_PUBLICATIONS,
     {
+      fetchPolicy: 'no-cache',
       variables: {
         request: {
           profileId: profileId,

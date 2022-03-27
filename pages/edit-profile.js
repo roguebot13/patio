@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'next/link'
 import { notify } from 'reapop'
-import { enabledCurrencies } from '../gql/modules'
+import { enabledCurrencies } from '../gql/module'
 import { pollUntilIndexed } from '../helpers/pollUntilIndexed'
 
 export default function EditProfilePage() {
@@ -42,10 +42,10 @@ export default function EditProfilePage() {
       </>
     )
   }
-  useEffect(async () => {
-    const res = await enabledCurrencies()
-    console.log('Currencies', res)
-  }, [])
+  // useEffect(async () => {
+  //   const res = await enabledCurrencies()
+  //   console.log('Currencies', res)
+  // }, [])
 
   return (
     <>

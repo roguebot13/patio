@@ -6,6 +6,11 @@ import PostFeed from '../../../components/PostFeed'
 import Link from 'next/link'
 import Post from '../../../components/Post'
 import dayjs from 'dayjs'
+import CreateMirror from '../../../components/createMirror'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import CreateComment from '../../../components/CreateComment'
+import CreateCollect from '../../../components/CreateCollect'
 
 export default function PostPage() {
   const router = useRouter()
@@ -13,6 +18,7 @@ export default function PostPage() {
   const { data, loading, error, fetchMore, refetch } = useQuery(
     GET_PUBLICATION,
     {
+      fetchPolicy: 'no-cache',
       variables: {
         publicationId: router.query.postId,
       },
@@ -79,7 +85,22 @@ export default function PostPage() {
               {dayjs(post.createdAt).fromNow()}
             </span>
           </div>
-          <p className="mt-8">{post.metadata.content}</p>
+          <div className="mt-8 max-w-2xl">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {post.metadata.content}
+            </ReactMarkdown>
+          </div>
+          <div className="flex mt-2 -ml-2 gap-2">
+            <div>
+              <CreateComment item={post} />
+            </div>
+            <div>
+              <CreateMirror item={post} itemMirroredBy={post.mirroredBy} />
+            </div>
+            <div>
+              <CreateCollect item={post} />
+            </div>
+          </div>
         </div>
         <PostFeed publicationId={post.id} />
       </div>

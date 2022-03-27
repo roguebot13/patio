@@ -14,6 +14,7 @@ export default function ExploreFeed({
   const { data, loading, error, fetchMore, refetch } = useQuery(
     EXPLORE_PUBLICATIONS_QUERY,
     {
+      fetchPolicy: 'no-cache',
       variables: {
         sortCriteria: sortCriteria,
         cursor: '{}',

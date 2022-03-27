@@ -27,7 +27,7 @@ export default function ExplorePage() {
             placeholder="Search posts"
           />
         </div>
-        <div className="flex-grow h-0 overflow-auto">
+        <div className="flex-grow h-0 overflow-auto max-w-3xl">
           <div className="flex w-full p-8 border-b-1 border-base-300">
             <div className="tabs">
               <div

@@ -9,6 +9,7 @@ export default function TimelineFeed({ profileId }) {
   const { data, loading, error, fetchMore, refetch } = useQuery(
     TIMELINE_QUERY,
     {
+      // fetchPolicy: 'no-cache',
       variables: {
         profileId: profileId,
         cursor: '{}',
@@ -32,6 +33,7 @@ export default function TimelineFeed({ profileId }) {
   }
 
   const items = data.timeline.items
+  console.log(items)
   const showLoadMore =
     data.timeline.items.length != data.timeline.pageInfo.totalCount &&
     data.timeline.pageInfo.next
