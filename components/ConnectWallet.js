@@ -70,7 +70,6 @@ export default function ConnectWallet() {
     localStorage.removeItem('refreshToken')
     localStorage.removeItem('accessExpiry')
     localStorage.removeItem('refreshExpiry')
-    localStorage.removeItem('currentProfile')
     setWalletConnected(false)
   }
 
@@ -106,6 +105,7 @@ export default function ConnectWallet() {
   }
 
   const logout = async () => {
+    dispatch({ type: 'REMOVE_LOCAL_PROFILE' })
     removeTokens()
   }
 
@@ -132,29 +132,18 @@ export default function ConnectWallet() {
 
   return (
     <div className="flex items-center justify-between pl-3">
-      <SwitchProfile />
+      <SwitchProfile logout={logout} />
       {walletConnected ? (
-        <button
-          className={
-            'btn btn-circle btn-sm btn-ghost' + (loading ? ' loading' : '')
-          }
-          onClick={logout}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-            />
-          </svg>
-        </button>
+        <div>
+          {loading ? (
+            <button
+              className="btn btn-ghost btn-square loading"
+              disabled
+            ></button>
+          ) : (
+            ''
+          )}
+        </div>
       ) : (
         <button
           className={'btn btn-primary' + (loading ? ' loading' : '')}

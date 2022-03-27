@@ -16,7 +16,9 @@ const getConnectedAddress = () => {
   return null
 }
 
-export default function SwitchProfile({ address }) {
+export default function SwitchProfile({ address, logout }) {
+  const currentProfile = useSelector((state) => state.profile)
+
   const { data, loading, error, fetchMore, refetch } = useQuery(
     GET_PROFILE_BY_OWNER,
     {
@@ -24,12 +26,17 @@ export default function SwitchProfile({ address }) {
         address: address ? address : getConnectedAddress(),
         cursor: '{}',
       },
+      onCompleted: () => {
+        if (!currentProfile.id && data.profiles.items.length) {
+          console.log('No local profile found..')
+          setCurrentProfile(data.profiles.items[0])
+        }
+      },
     },
   )
   useEffect(refetch, [address])
 
   const dispatch = useDispatch()
-  const currentProfile = useSelector((state) => state.profile)
 
   const setCurrentProfile = (profile) => {
     dispatch({ type: 'UPDATE_LOCAL_PROFILE', payload: profile })
@@ -93,7 +100,7 @@ export default function SwitchProfile({ address }) {
         {showLoadMore ? (
           <li>
             <a
-              className="btn btn-primary"
+              className="btn btn-secondary rounded-none"
               onClick={() => {
                 fetchMore({
                   variables: {
@@ -109,6 +116,16 @@ export default function SwitchProfile({ address }) {
         ) : (
           ''
         )}
+        <li>
+          <Link href="/create-profile">
+            <a className="btn rounded-none">Create Profile</a>
+          </Link>
+        </li>
+        <li>
+          <a className="btn btn-primary" onClick={logout}>
+            Logout
+          </a>
+        </li>
       </ul>
     </div>
   )
