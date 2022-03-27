@@ -145,11 +145,20 @@ export default function EditProfilePage() {
               twitterUrl: e.target.elements.twitterUrl.value.trim(),
               coverPicture: e.target.elements.coverPicture.value.trim(),
             }
+            if (request.bio === '') {
+              request.bio = null
+            }
+            if (request.location === '') {
+              request.location = null
+            }
             if (request.website === '') {
               request.website = null
             }
             if (request.twitterUrl === '') {
               request.twitterUrl = null
+            }
+            if (request.coverPicture === '') {
+              request.coverPicture = null
             }
             console.log(request)
             try {
@@ -182,6 +191,7 @@ export default function EditProfilePage() {
               name="name"
               className="input input-bordered"
               defaultValue={currentProfile?.name || ''}
+              required
             ></input>
           </div>
           <div className="form-control max-w-xs">
@@ -192,6 +202,7 @@ export default function EditProfilePage() {
               name="bio"
               className="textarea textarea-bordered"
               defaultValue={currentProfile?.bio || ''}
+              required
             ></textarea>
           </div>
           <div className="form-control max-w-xs">
@@ -202,6 +213,7 @@ export default function EditProfilePage() {
               name="location"
               className="input input-bordered"
               defaultValue={currentProfile?.location || ''}
+              required
             ></input>
           </div>
           <div className="form-control max-w-md">
@@ -212,6 +224,7 @@ export default function EditProfilePage() {
               name="website"
               className="input input-bordered"
               defaultValue={currentProfile?.website || ''}
+              required
             ></input>
           </div>
           <div className="form-control max-w-md">
@@ -222,12 +235,14 @@ export default function EditProfilePage() {
               name="twitterUrl"
               className="input input-bordered"
               defaultValue={currentProfile?.twitterUrl || ''}
+              required
             ></input>
           </div>
           <FileUploadUri
             name="coverPicture"
             label="Cover picture url"
             defaultValue={currentProfile?.coverPicture?.original.url}
+            required={true}
           />
 
           {errorMessage ? (
